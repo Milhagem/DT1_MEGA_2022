@@ -68,58 +68,52 @@ void setup()
   analogWrite(10, 0);
   analogWrite(11, 0);
 
-  // Define a frequência do PWM para os MOSFET's
-  // Seta Timer 1 (1B) para 490 Hz para frequência do PWM (pino 11)
-  // Seta Timer 2 (2B) para 980 Hz para frequência do PWM (pino 9 e 10)
-  int myEraser = 7;      // cria uma variável com valor 7 (111 em binário) para modificar os registradores dos pinos 9, 10 e 11
-  TCCR1B &= ~myEraser;   // usa operações AND e NOT, usando o valor de myEraser para ZERAR os três primeiros dígitos de TCCR1B (pino 11)
-  TCCR2B &= ~myEraser;   // usa operações AND e NOT, usando o valor de myEraser para ZERAR os três primeiros dígitos de TCCR2B (pinos 9 e 10)
-  int myPrescaler = 3;   // essa variável pode ser um número entre 1 e 6, de modo que cada um corresponde a uma frequência, dependendo do registrador. Para o registrador 1B, o número 3 é 490Hz. Para o 2B, é 980Hz.
-  TCCR1B |= myPrescaler; // usa a operação OR para substituir os valores dos três últimos dígitos para o valor de 3 (011)
-  TCCR2B |= myPrescaler; // usa a operação OR para substituir os valores dos três últimos dígitos para o valor de 3 (011)
+// Define a frequência do PWM para os MOSFET's
+// Seta Timer 1 (1B) para 490 Hz para frequência do PWM (pino 11)
+// Seta Timer 2 (2B) para 980 Hz para frequência do PWM (pino 9 e 10)
+  int myEraser = 7;            // cria uma variável com valor 7 (111 em binário) para modificar os registradores dos pinos 9, 10 e 11
+  TCCR1B &= ~myEraser;         // usa operações AND e NOT, usando o valor de myEraser para ZERAR os três primeiros dígitos de TCCR1B (pino 11)
+  TCCR2B &= ~myEraser;         // usa operações AND e NOT, usando o valor de myEraser para ZERAR os três primeiros dígitos de TCCR2B (pinos 9 e 10)
+  int myPrescaler = 3;         // essa variável pode ser um número entre 1 e 6, de modo que cada um corresponde a uma frequência, dependendo do registrador. Para o registrador 1B, o número 3 é 490Hz. Para o 2B, é 980Hz.
+  TCCR1B |= myPrescaler;       // usa a operação OR para substituir os valores dos três últimos dígitos para o valor de 3 (011)
+  TCCR2B |= myPrescaler;       // usa a operação OR para substituir os valores dos três últimos dígitos para o valor de 3 (011)
+
 }
-void loop()
-{
-  tempo_Atual = millis();
-  estado_controle = digitalRead(chave_controle);
-
-  // Se houver mudança da chave controle, então a rampa é "zerada". Voltando a incrementar do zero
-  if (estado_controle != estado_controle_ant)
-  {
-    incremento_rampa = 0;
-    estado_controle_ant = estado_controle;
-  }
-
-  // Configura o valor do início da rampa de acordo com o selecionado na chave_controle
-  // O valor mais baixo é para a arrancada, e o mais alto é para a pista
-  // Os valores podem mudar conforme variar o peso do carro e do piloto
-  if (digitalRead(chave_controle) == HIGH)
-  {
-    inicio_rampa = 25;
-  }
-  else
-  {
-    inicio_rampa = 50;
-  }
-
-  // Liga o carro se o pedal estiver completamente pressionado. Ou se o acelerador estiver ligado
-  if (((digitalRead(botao1_pedal) == HIGH) && (digitalRead(botao2_pedal) == LOW)) || (digitalRead(acelerador) == LOW))
-  {
-    if (incremento_rampa < 90 - inicio_rampa)
-    { // Se o PWM sobre os MOSFET's ainda é menor do que 90%
-      if ((tempo_Atual - tempo_Anterior) >= 70)
-      { // Incrementa a cada 70 milisegundos
-        incremento_rampa += 1;
-        tempo_Anterior = tempo_Atual;
-      }
+void loop() {
+    tempo_Atual = millis(); 
+    estado_controle = digitalRead(chave_controle);
+  
+    // Se houver mudança da chave controle, então a rampa é "zerada". Voltando a incrementar do zero
+    if(estado_controle != estado_controle_ant){
+        incremento_rampa = 0;
+        estado_controle_ant = estado_controle;
     }
-    pwwm = map(incremento_rampa + inicio_rampa, 0, 100, 0, 255);
-  }
-  else
-  {
-    incremento_rampa = 0;
-    pwwm = map(incremento_rampa, 0, 100, 0, 255);
-  }
+  
+    // Configura o valor do início da rampa de acordo com o selecionado na chave_controle
+    // O valor mais baixo é para a arrancada, e o mais alto é para a pista
+    // Os valores podem mudar conforme variar o peso do carro e do piloto
+    if(digitalRead(chave_controle)==HIGH){
+       inicio_rampa = 40;
+    }
+    else{
+       inicio_rampa = 50;
+    }
+
+  
+    // Liga o carro se o pedal estiver completamente pressionado. Ou se o acelerador estiver ligado
+    if( ( (digitalRead(botao1_pedal)== LOW) && (digitalRead(botao2_pedal)== HIGH) ) || (digitalRead(acelerador) == LOW) ){
+        if (incremento_rampa < 90 - inicio_rampa){            // Se o PWM sobre os MOSFET's ainda é menor do que 90%
+            if ((tempo_Atual - tempo_Anterior) >= 70){  // Incrementa a cada 70 milisegundos
+            incremento_rampa+=1;
+            tempo_Anterior = tempo_Atual;
+            }  
+        }
+        pwwm = map(incremento_rampa + inicio_rampa, 0, 100, 0, 255);   
+    }
+    else{ 
+          incremento_rampa = 0;
+          pwwm = map(incremento_rampa, 0, 100, 0, 255); // Não entendi porque colocaram essa variável sendo que podia só por o                                                           // valor zero, por mim acho que pode por o zero
+    }
 
   hallA_estado = digitalRead(4); // variavel recebe o valor do sensor Hall A
   hallB_estado = digitalRead(3); // variavel recebe o valor do sensor Hall B
