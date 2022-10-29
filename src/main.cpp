@@ -101,7 +101,7 @@ void loop() {
 
   
     // Liga o carro se o pedal estiver completamente pressionado. Ou se o acelerador estiver ligado
-    if( ( (digitalRead(botao1_pedal)== LOW) && (digitalRead(botao2_pedal)== HIGH) ) || (digitalRead(acelerador) == LOW) ){
+    if( ( (digitalRead(botao2_pedal)== LOW) && (digitalRead(botao1_pedal)== HIGH) ) || (digitalRead(acelerador) == LOW) ){
         if (incremento_rampa < 90 - inicio_rampa){            // Se o PWM sobre os MOSFET's ainda é menor do que 90%
             if ((tempo_Atual - tempo_Anterior) >= 70){  // Incrementa a cada 70 milisegundos
             incremento_rampa+=1;
