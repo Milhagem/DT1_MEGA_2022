@@ -93,7 +93,7 @@ void loop() {
     // O valor mais baixo é para a arrancada, e o mais alto é para a pista
     // Os valores podem mudar conforme variar o peso do carro e do piloto
     if(digitalRead(chave_controle)==HIGH){
-       inicio_rampa = 40;
+       inicio_rampa = 25;
     }
     else{
        inicio_rampa = 50;
