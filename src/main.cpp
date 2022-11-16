@@ -70,9 +70,9 @@ void setup()
   PORTE &= ~(1 << PORTE3); // pin 5
   PORTH &= ~(1 << PORTH3); // pin 6
   PORTH &= ~(1 << PORTH4); // pin 7
-  analogWrite(9, 0);
-  analogWrite(10, 0);
-  analogWrite(11, 0);
+  analogWrite(MOSFET_A_LOW, 0);
+  analogWrite(MOSFET_B_LOW, 0);
+  analogWrite(MOSFET_C_LOW, 0);
 
 // Define a frequencia do PWM para os MOSFETs
 // Seta Timer 1 (1B) para 490 Hz para frequencia do PWM (pino 11)
