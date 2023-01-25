@@ -163,7 +163,7 @@ void loop() {
     PORTH &= ~(1 << PORTH3); // Pino 6 (BH) desligado
     PORTH &= ~(1 << PORTH4); // Pino 7 (CH) desligado
     analogWrite(9, 0);       // Pino 9 (AL) desligado
-    analogWrite(11, 0);      // Pino 10 (CL) desligado
+    analogWrite(11, 0);      // Pino 11 (CL) desligado
 
     PORTE |= 1 << PORTE3;  // Pino 5 (AH) ligado
     analogWrite(10, pwwm); // Transistor BL com PWM ativo
